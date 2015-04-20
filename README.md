@@ -4,11 +4,11 @@ This is a Julia package for representing and computing with abstract domains.
 
 [![Build Status](https://travis-ci.org/zenna/AbstractDomains.jl.svg?branch=master)](https://travis-ci.org/zenna/AbstractDomains.jl)
 
-Elements in an abstract domain can represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the Real or Floating point numbers between `a` and `b`.  AbstractDomains.jl then provides analogus functions for these lifted domains, so that for example we can add or multiple two intervals.
+Elements in an abstract domain can represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the Real or Floating point numbers between `a` and `b`.  AbstractDomains.jl then provides analogous functions for these lifted domains, so that for example we can add or multiple two intervals.
 
 # Domains
 
-Currently AbstractDomains supports only two abstract domains: intervals and abstract booleans.  If you have a primitive functions such as `+`, `-`, `&`, `ifelse`, etc defined on concrete values such as `Float64`s or `Bool`s, there are corresponding methods defined on their abstract versions: `Interval`s and `AbstractBool`s.  The meaning of this operation is (*pointwise*)[http://en.wikipedia.org/wiki/Pointwise]
+Currently AbstractDomains supports only two abstract domains: intervals and abstract booleans.  If you have a primitive functions such as `+`, `-`, `&`, `ifelse`, etc defined on concrete values such as `Float64`s or `Bool`s, there are corresponding methods defined on their abstract versions: `Interval`s and `AbstractBool`s.  The meaning of this operation is [*pointwise*](http://en.wikipedia.org/wiki/Pointwise)
 
 # Example
 
