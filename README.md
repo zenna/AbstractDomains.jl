@@ -1,14 +1,16 @@
 # AbstractDomains.jl
 
-This is a Julia package for representing and computing with abstract domains. 
+This is a Julia package for representing and computing with [abstract domains](http://en.wikipedia.org/wiki/Abstract_interpretation#Examples_of_abstract_domains). 
 
 [![Build Status](https://travis-ci.org/zenna/AbstractDomains.jl.svg?branch=master)](https://travis-ci.org/zenna/AbstractDomains.jl)
 
-Elements in an abstract domain can represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the Real or Floating point numbers between `a` and `b`.  AbstractDomains.jl then provides analogous functions for these lifted domains, so that for example we can add or multiple two intervals.
+A abstract domain is used to represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the floating point numbers between `a` and `b`.  AbstractDomains.jl then provides functions for computing with abstract values, for instance we can add or multiple two intervals.
 
 # Domains
 
-Currently AbstractDomains supports only two abstract domains: intervals and abstract booleans.  If you have a primitive functions such as `+`, `-`, `&`, `ifelse`, etc defined on concrete values such as `Float64`s or `Bool`s, there are corresponding methods defined on their abstract versions: `Interval`s and `AbstractBool`s.  The meaning of this operation is [*pointwise*](http://en.wikipedia.org/wiki/Pointwise)
+Currently AbstractDomains.jl supports only two abstract domains: `Interval` and `AbstractBool`.  For every primitive functions such as `+`, `-`, `&`, `ifelse`, defined on concrete values such as `Float64` or `Bool`, there is a  corresponding *lifted* method defined on its abstract counterpart: `Interval` and `AbstractBool`.
+
+The meaning of these *lifted* functions is [*pointwise*](http://en.wikipedia.org/wiki/Pointwise).  That is, if we do `C = f(A,B)` where `A` and `B` are elements belonging to an abstract domain, then `C` should contain the result of applying `f` to __all possible combinations__ of elements in `A` and `B`.
 
 # Example
 
@@ -25,11 +27,11 @@ julia> C = A + B
 [1.0 3.0]
 ```
 
-`C` should be an interval which represents all the values if we took every value in the interval `A`.  The following code represents what this means (not it is not valid code)
+`C` should be an interval which represents all the values if we took every value in the interval `A`.  The following code represents what this means (__note:__ it is not valid code):
 
 ```julia
 # What C = A + B is doing (conceptually!)
-c = Set()
+c = Set(Float64)
 for a in A
   for b in B
     push!(c, a + b)
@@ -37,7 +39,8 @@ for a in A
 end
 ```
 
-Functions involving intervals and normal values are defined
+Functions involving intervals and normal values are also defined in AbstractDomains.jl:
+
 ```julia
 julia> C * 3
 [3.0 9.0]
@@ -45,7 +48,7 @@ julia> C * 3
 
 ## Boolean Functions and AbstractBools
 
-If we apply boolean functions (`>` `>=` `<` `<=` `ifelse`) to intervals, we don't get back `Bool`s, we get back abstract `AbstractBool`.  For example
+If we apply boolean functions (`>` `>=` `<` `<=` `ifelse`) to intervals, we don't get back a `Bool`, we get back an `AbstractBool`.  For example:
 
 ```julia
 julia> A = Interval(1,2)
@@ -58,9 +61,9 @@ julia> A > 3
 {false}
 ```
 
-This means that for all the elements in `A` (e..g 1.0, 1.000001, 1.00002,...), *all* of them are greater than 0.  Similarly _none_ of `A` is greater than 3. But why has it returned these strange value `{true}` and `{false}` instead of `true` and `false`?  The next example should help illustrate why:
+This means that for all the elements in `A` (e.g., 1.0, 1.000001, 1.00002,...), *all* of them are greater than 0.  Similarly _none_ of `A` is greater than 3. But why has it returned these strange value `{true}` and `{false}` instead of `true` and `false`?  The next example should help illustrate why:
 
-```
+```julia
 julia> A = Interval(1,2)
 [1.0 2.0]julia> A / A
 [0.5 2.0]
@@ -122,7 +125,7 @@ false
 ```
 
 
-`=== ` is an example of functions on abstract objects which is not defined pointwise.  There are many useful others.  Some of these are called *domain functions*:
+`=== ` is an example of a function on abstract values which is not defined pointwise.  There are many useful others.  Some of which we call *domain functions*:
 
 ```julia
 julia> subsumes(Interval(0,1),Interval(0.4,0.5))
@@ -137,11 +140,6 @@ false
 julia> overlap(t,tf)
 true
 
-
-overlap(x::Interval, y::Interval) = y.l <= x.u && x.l <= y.u
-domaineq(x::Interval, y::Interval) = x.u == y.u && x.l == y.l
-isequal(x::Interval,y::Interval) = domaineq(x,y)
-
 # ⊔ (\sqcup) is a lub
 julia> Interval(0,1) ⊔ Interval(10,3)
 [0.0 10.0]
@@ -149,9 +147,9 @@ julia> Interval(0,1) ⊔ Interval(10,3)
 
 # Imprecision
 
-Abstractions are *sound* but can be *imprecise*.  Imprecision means that the result of a function application may contain values which are not possible in reality. E.g.
+Abstractions are *sound* but can be *imprecise*.  Imprecision means that the result of a function application may contain values which are not possible in reality. E.g.:
 
-```
+```julia
 julia> A = Interval(1,2)
 [1.0 2.0]
 
@@ -163,7 +161,7 @@ The precise answer should be `[1.0, 1.0]`.  This imprecision comes because we do
 
 Imprecision is undesirable.  We can take some comfort in knowing that we'll always be sound, which this example also demonstrates.  Soundness means that the true answer `[1.0, 1.0]` must be a subset of the answer AbstractDomains.jl gives us.  For instance, the following would __never__ happen
 
-```
+```julia
 julia> A = Interval(1,2)
 [1.0 2.0]
 
