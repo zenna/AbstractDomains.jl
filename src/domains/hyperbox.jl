@@ -1,4 +1,3 @@
-using Iterators
 import Base.in
 import Base.inv
 
@@ -7,12 +6,6 @@ type HyperBox <: Domain{Float64}
 end
 
 ndims(b::HyperBox) = size(b.intervals,2)
-
-## Measure
-## =======
-measure(b::HyperBox) = prod([b.intervals[2,i] - b.intervals[1,i] for i = 1:ndims(b)])
-measure{B<:HyperBox}(bs::Vector{B}) = [measure(b) for b in bs]
-logmeasure(b::HyperBox) = sum(map(log,[b.intervals[2,i] - b.intervals[1,i] for i = 1:ndims(b)]))
 
 ## Splitting
 ## =========
