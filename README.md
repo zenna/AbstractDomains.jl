@@ -96,7 +96,7 @@ julia> tf | f
 Some of these may require thinking about.  But they are all consistent with the semantics of functions on abstract operations being defined pointwise, as described above.
 
 ## Equality
-Perhaps surprisingly, there are meany meaningful definitions of equality.  In AbstractDomains.jl equality `==` is, like the other functions we've seen before, defined pointwise.  This can lead to some unexpected results if you're not careful, e.g.
+Perhaps surprisingly, there are many meaningful definitions of equality.  In AbstractDomains.jl equality `==` is, like the other functions we've seen before, defined pointwise.  This can lead to some unexpected results if you're not careful, e.g.
 
 ```julia
 julia> tf == tf
@@ -104,7 +104,7 @@ julia> tf == tf
 
 ```
 
-The answer is `{true,false}` because `true & true` is `true`, but `false & true` is `false` (to take just two of four possible combinations).  Similarly:
+The answer is `{true,false}` because `true == true` is `true`, but `false == true` is `false` (to take just two of four possible combinations).  Similarly:
 
 ```julia
 julia> Interval(0,1) == Interval(0,1)
@@ -114,18 +114,18 @@ julia> Interval(0,1) == Interval(0,1)
 The answer is `{true,false}` because there are points in the first interval which equal to points in the second interval, but there are also points in the first interval which are not equal to point in the second interval.
 
 # Non-pointwise functions on abstract domains
-If we really want to test the identity of abstract objects we would use `===`, e.g.
+If we really want to test the identity of abstract objects we would use `isequal, e.g.
 
 ```julia
-julia> Interval(0,1) === Interval(0,1)
+julia> isequal(Interval(0,1), Interval(0,1))
 true
 
-julia> tf === f
+julia> isequal(tf,f)
 false
 ```
 
 
-`=== ` is an example of a function on abstract values which is not defined pointwise.  There are many useful others.  Some of which we call *domain functions*:
+`isequal ` is an example of a function on abstract values which is not defined pointwise.  There are many useful others.  Some of which we call *domain functions*:
 
 ```julia
 julia> subsumes(Interval(0,1),Interval(0.4,0.5))
