@@ -1,6 +1,6 @@
 using AbstractDomains
 using Base.Test
-import AbstractDomains: overlap, subsumes, ⊔, flip, abs
+import AbstractDomains: overlap, subsumes, ⊔
 import AbstractDomains: t, f, tf
 
 @test t & f === f
