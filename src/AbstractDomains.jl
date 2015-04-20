@@ -1,15 +1,18 @@
 module AbstractDomains
 
-import Base: string
+import Base: convert, promote_rule
+import Base: string, print, show, showcompact
+import Base: abs, zero, in
 
 if VERSION.minor <= 3
   typealias UInt8 Uint8
 end
 
 export Interval,
-       t,f,tf
+       AbstractBool,
+       t,f,tf,
+       ⊔, subsumes, overlap
 
 include("domains.jl")
-include("polyhedra.jl")
 
 end

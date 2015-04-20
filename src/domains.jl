@@ -2,8 +2,6 @@
 abstract Domain{T}
 
 for finame in ["bool.jl",
-               "hyperbox.jl",
-               "interval.jl",
-               "simpledisjunctive.jl"]
+               "interval.jl",]
     include(joinpath("domains", finame))
 end

@@ -11,14 +11,14 @@ unitinterval() = Interval(0.,1.)
 
 ## Conversions
 ## ===========
-function convert(::Type{HyperBox}, i::Vector{Interval})
-  intervals = Array(Float64,2,length(i))
-  for j in 1:length(i)
-    intervals[:,j] = [i[j].l i[j].u]
-  end
-  HyperBox(intervals)
-end
-convert(::Type{Vector{Interval}}, b::HyperBox) = [Interval(b.intervals[:,i]) for i = 1:ndims(b)]
+# function convert(::Type{HyperBox}, i::Vector{Interval})
+#   intervals = Array(Float64,2,length(i))
+#   for j in 1:length(i)
+#     intervals[:,j] = [i[j].l i[j].u]
+#   end
+#   HyperBox(intervals)
+# end
+# convert(::Type{Vector{Interval}}, b::HyperBox) = [Interval(b.intervals[:,i]) for i = 1:ndims(b)]
 
 # A concrete number can be concerted to an interval with no width
 convert(::Type{Interval}, c::ConcreteReal) = Interval(c, c)
@@ -44,9 +44,9 @@ isequal(x::Interval,y::Interval) = domaineq(x,y)
 
 # ==, != return values in AbstractBool
 function ==(x::Interval, y::Interval)
-  if x.u == y.u == x.l == y.l T
-  elseif overlap(x,y) TF
-  else F end
+  if x.u == y.u == x.l == y.l t
+  elseif overlap(x,y) tf
+  else f end
 end
 
 !=(x::Interval,y::Interval) = !(==(x,y))
@@ -57,9 +57,9 @@ end
 !=(x::Interval, y::ConcreteReal) = !==(x,y)
 !=(y::ConcreteReal, x::Interval) = !==(y,x)
 
->(x::Interval, y::Interval) = if x.l > y.u T elseif x.u <= y.l F else TF end
->(x::Interval, y::ConcreteReal) = if x.l > y T elseif x.u <= y F else TF end
->(y::ConcreteReal, x::Interval) =  if y > x.u T elseif y <= x.l F else TF end
+>(x::Interval, y::Interval) = if x.l > y.u t elseif x.u <= y.l f else tf end
+>(x::Interval, y::ConcreteReal) = if x.l > y t elseif x.u <= y f else tf end
+>(y::ConcreteReal, x::Interval) =  if y > x.u t elseif y <= x.l f else tf end
 
 <(x::Interval, y::Interval) = y > x
 <(x::Interval, y::ConcreteReal) = y > x
@@ -130,6 +130,10 @@ end
 /(c::ConcreteReal, x::Interval) = convert(Interval,c) / x
 /(x::Interval, c::ConcreteReal) = x / convert(Interval,c)
 
+## Functions on Interval type
+## ==========================
+zero(::Type{Interval}) = Interval(0.0,0.0)
+
 ## Functions on interval abstraction itself
 ## =======================================
 reflect(x::Interval) = Interval(-x.l,-x.u)
@@ -149,7 +153,7 @@ round(x::Interval) = Interval(round(x.l), round(x.u))
 
 function isinf(x::Interval)
   if isinf(x.l) || isinf(x.u)
-    x.u == x.l ? T : TF
+    x.u == x.l ? T : t
   else
     F
   end
