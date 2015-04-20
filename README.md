@@ -1,6 +1,10 @@
 # AbstractDomains.jl
 
-This is a library of abstract domains, mostly numerical.   Elements in an abstract domain can represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the Real or Floating point numbers between `a` and `b`.  AbstractDomains.jl then provides analogus functions for these lifted domains, so that for example we can add or multiple two intervals.
+This is a Julia package for representing and computing with abstract domains. 
+
+[![Build Status](https://travis-ci.org/zenna/AbstractDomains.jl.svg?branch=master)](https://travis-ci.org/zenna/AbstractDomains.jl)
+
+Elements in an abstract domain can represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the Real or Floating point numbers between `a` and `b`.  AbstractDomains.jl then provides analogus functions for these lifted domains, so that for example we can add or multiple two intervals.
 
 # Domains
 
