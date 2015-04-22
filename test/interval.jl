@@ -55,7 +55,7 @@ using Base.Test
 @test Interval(0,0) ⊔ 1 === Interval(0,1)
 
 # Conversion Tests
-@test convert(Interval, 3) == Interval{Int}(3,3)
-@test convert(Interval{Float64}, 3) == Interval{Float64}(3.0,3.0)
-@test convert(Interval{Float64}, Interval(1,2)) == Interval(1.0,2.0)
-@test (promote(Interval(3,5),Interval(10.0,20.0))) == (Interval(3.0,5.0),Interval(10.0,20.0))
+@test convert(Interval, 3) === Interval{Int}(3,3)
+@test convert(Interval{Float64}, 3) === Interval{Float64}(3.0,3.0)
+@test convert(Interval{Float64}, Interval(1,2)) === Interval(1.0,2.0)
+@test (promote(Interval(3,5),Interval(10.0,20.0))) === (Interval(3.0,5.0),Interval(10.0,20.0))

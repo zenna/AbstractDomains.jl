@@ -1,8 +1,8 @@
 @doc """
   An axis aligned hyperbox - a set of intervals 
   """ ->
-type HyperBox <: Domain{Float64}
-  intervals::Array{Float64,2}
+type HyperBox{T} <: Domain{T}
+  intervals::Array{T,2}
 end
 
 ## Domain operations
