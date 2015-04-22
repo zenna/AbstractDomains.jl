@@ -71,20 +71,20 @@ function convert(::Type{Vector{EnvVar}}, b::HyperBox)
   x = [intervalenvvar(b.intervals[1,i],b.intervals[2,i]) for i = 1:num_dims(b)]
 end
 
-function overlap(e::EnvVar, a::AbstractBool)
-  doesoverlap = false # only has to overlap with one
+function isintersect(e::EnvVar, a::AbstractBool)
+  doesisintersect = false # only has to isintersect with one
   for world in e.worlds
-    doesoverlap = doesoverlap | overlap(a,world[2])
+    doesisintersect = doesisintersect | isintersect(a,world[2])
   end
-  doesoverlap
+  doesisintersect
 end
 
-function overlap(a::AbstractBool, e::EnvVar)
-  doesoverlap = false # only has to overlap with one
+function isintersect(a::AbstractBool, e::EnvVar)
+  doesisintersect = false # only has to isintersect with one
   for world in e.worlds
-    doesoverlap = doesoverlap | overlap(a,world[2])
+    doesisintersect = doesisintersect | isintersect(a,world[2])
   end
-  doesoverlap
+  doesisintersect
 end
 
 ConcreteValue = Union(Float64, Int64, Bool)

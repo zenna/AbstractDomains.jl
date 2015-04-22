@@ -62,9 +62,11 @@ end
 subsumes(x::AbstractBool, y::AbstractBool) = x === tf || x === y
 subsumes(x::AbstractBool, y::Bool) = subsumes(x,convert(AbstractBool, y))
 
-overlap(x::AbstractBool, y::AbstractBool) = !((x === t && y === f) || (x === f && y === t))
-overlap(x::AbstractBool, y::Bool) = overlap(x,convert(AbstractBool, y))
-overlap(x::Bool, y::AbstractBool) = overlap(convert(AbstractBool, x),y)
+isintersect(x::AbstractBool, y::AbstractBool) = !((x === t && y === f) || (x === f && y === t))
+isintersect(x::AbstractBool, y::Bool) = isintersect(x,convert(AbstractBool, y))
+isintersect(x::Bool, y::AbstractBool) = isintersect(convert(AbstractBool, x),y)
+
+isrelational(::Type{AbstractBool}) = false
 
 ⊔(a::AbstractBool) = a
 ⊔(a::AbstractBool, b::AbstractBool) = a === b ? a : tf

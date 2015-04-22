@@ -1,5 +1,5 @@
 using AbstractDomains
-import AbstractDomains: subsumes, overlap, ⊔, sqr, makepos
+import AbstractDomains: subsumes, isintersect, ⊔, sqr, makepos
 using Base.Test
 
 # Concrete Arithmetic Examples
@@ -12,11 +12,11 @@ using Base.Test
 @test !subsumes(Interval(-5,5), Interval(-3,10))
 @test !subsumes(Interval(-5,5), Interval(10,20))
 
-@test overlap(Interval(-5,5), Interval(-3,3))
-@test overlap(Interval(-5,5), Interval(-3,10))
-@test overlap(Interval(0,5), Interval(5,10))
-@test !overlap(Interval(-5,5), Interval(10,20))
-@test !overlap(Interval(10,20), Interval(5,-5))
+@test isintersect(Interval(-5,5), Interval(-3,3))
+@test isintersect(Interval(-5,5), Interval(-3,10))
+@test isintersect(Interval(0,5), Interval(5,10))
+@test !isintersect(Interval(-5,5), Interval(10,20))
+@test !isintersect(Interval(10,20), Interval(5,-5))
 
 @test (Interval(5,5) > Interval(5,5)) === f
 @test (Interval(0,5) > Interval(5,5)) === f
@@ -53,3 +53,9 @@ using Base.Test
 # ⊔
 @test ⊔(Interval(-3,2), Interval(10,12)) === Interval(-3,12)
 @test Interval(0,0) ⊔ 1 === Interval(0,1)
+
+# Conversion Tests
+@test convert(Interval, 3) == Interval{Int}(3,3)
+@test convert(Interval{Float64}, 3) == Interval{Float64}(3.0,3.0)
+@test convert(Interval{Float64}, Interval(1,2)) == Interval(1.0,2.0)
+@test (promote(Interval(3,5),Interval(10.0,20.0))) == (Interval(3.0,5.0),Interval(10.0,20.0))

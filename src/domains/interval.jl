@@ -1,18 +1,35 @@
 ConcreteReal = Union(Float64,Int64)
 
-immutable Interval <: Domain{Float64}
-  l::Float64
-  u::Float64
+@doc doc"""An Interval of type 'T' between 'a' and 'b' represents all the values
+  of type 'T' between 'a' and 'b'.
+""" ->
+immutable Interval{T<:Real} <: Domain{T}
+  l::T
+  u::T
   Interval(l,u) =  if u > l new(l, u) else new(u,l) end
 end
 
-Interval(v::Vector) = Interval(v[1],v[2])
-unitinterval() = Interval(0.,1.)
+Interval{T<:Real}(x::T) = Interval{T}(x,x)
+Interval{T<:Real}(v::Vector{T}) = Interval(v[1],v[2])
+Interval{T<:Real}(x::T,y::T) = Interval{T}(x,y)
 
-## Conversions
-## ===========
-# function convert(::Type{HyperBox}, i::Vector{Interval})
-#   intervals = Array(Float64,2,length(i))
+## Conversions and Promotion
+## =========================
+
+# A concrete number can be coerced into an interval with no width
+function convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, x::Interval{T2})
+  T = promote_type(T1,T2)
+  Interval{T}(convert(T,x.l),convert(T,x.u))
+end 
+convert{T<:Real}(::Type{Interval}, c::T) = Interval{T}(c,c)
+convert{T<:Real}(::Type{Interval{T}}, c::T) = Interval{T}(c,c)
+convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, c::T2) = Interval{T1}(c,c)
+
+promote_rule{T1<:Real, T2<:Real}(::Type{Interval{T1}}, ::Type{T2}) = Interval{T1}
+promote_rule{T1<:Real, T2<:Real}(::Type{Interval{T1}}, ::Type{Interval{T2}}) = Interval{promote_type(T1,T2)}
+
+# function convert{T}(::Type{HyperBox{T}}, i::Vector{Interval{T}})
+#   intervals = Array(T,2,length(i))
 #   for j in 1:length(i)
 #     intervals[:,j] = [i[j].l i[j].u]
 #   end
@@ -20,24 +37,36 @@ unitinterval() = Interval(0.,1.)
 # end
 # convert(::Type{Vector{Interval}}, b::HyperBox) = [Interval(b.intervals[:,i]) for i = 1:ndims(b)]
 
-# A concrete number can be concerted to an interval with no width
-convert(::Type{Interval}, c::ConcreteReal) = Interval(c, c)
-promote_rule{T<:ConcreteReal}(::Type{T}, ::Type{Interval}) = Interval
-
-## Print
-## =====
-string(x::Interval) = "[$(x.l) $(x.u)]"
-print(io::IO, x::Interval) = print(io, string(x))
-show(io::IO, x::Interval) = print(io, string(x))
-showcompact(io::IO, x::Interval) = print(io, string(x))
-
-## Set operations
-## ==============
+## Domain operations
+## =================
 ndims(i::Interval) = 1
 subsumes(x::Interval, y::Interval) = y.l >= x.l && y.u <= x.u
-overlap(x::Interval, y::Interval) = y.l <= x.u && x.l <= y.u
+issubset(x::Interval, y::Interval) = x.l >= y.l && x.u <= y.u
+⊑ = issubset
+
+isintersect(x::Interval, y::Interval) = y.l <= x.u && x.l <= y.u
 domaineq(x::Interval, y::Interval) = x.u == y.u && x.l == y.l
+
+@doc "Construct interval which is intersection of two intervals" ->
+intersect{T}(x::Interval{T}, y::Interval{T}) = Interval(max(a.l, y.l), min(a.u, y.u))
+intersect{T,S}(a::Interval{T}, b::Interval{S}) = intersect(promote(a,b)...)
+⊓ = intersect
+
+## Union/Join
+union(a::Interval, b::Interval) = ⊔(a, b)
+function ⊔(a::Interval, b::Interval)
+  l = min(a.l,b.l)
+  u = max(a.u, b.u)
+  Interval(l,u)
+end
+
+⊔(a::Interval, b::ConcreteReal) = ⊔(promote(a,b)...)
+⊔(b::ConcreteReal, a::Interval) = ⊔(promote(b,a)...)
+⊔(a::Interval) = a
+⊔(a::Vector{Interval}) = reduce(⊔,a)
+
 isequal(x::Interval,y::Interval) = domaineq(x,y)
+isrelational(::Type{Interval}) = false
 
 ## Interval Arithmetic and Inequalities
 ## ====================================
@@ -45,42 +74,43 @@ isequal(x::Interval,y::Interval) = domaineq(x,y)
 # ==, != return values in AbstractBool
 function ==(x::Interval, y::Interval)
   if x.u == y.u == x.l == y.l t
-  elseif overlap(x,y) tf
+  elseif isintersect(x,y) tf
   else f end
 end
 
 !=(x::Interval,y::Interval) = !(==(x,y))
 
-==(x::Interval,y::ConcreteReal) = ==(promote(x,y)...)
-==(y::ConcreteReal,x::Interval) = ==(promote(y,x)...)
+==(x::Interval,y::Real) = ==(promote(x,y)...)
+==(y::Real,x::Interval) = ==(promote(y,x)...)
 
-!=(x::Interval, y::ConcreteReal) = !==(x,y)
-!=(y::ConcreteReal, x::Interval) = !==(y,x)
+!=(x::Interval, y::Real) = !==(x,y)
+!=(y::Real, x::Interval) = !==(y,x)
 
 >(x::Interval, y::Interval) = if x.l > y.u t elseif x.u <= y.l f else tf end
->(x::Interval, y::ConcreteReal) = if x.l > y t elseif x.u <= y f else tf end
->(y::ConcreteReal, x::Interval) =  if y > x.u t elseif y <= x.l f else tf end
+>(x::Interval, y::Real) = if x.l > y t elseif x.u <= y f else tf end
+>(y::Real, x::Interval) =  if y > x.u t elseif y <= x.l f else tf end
 
 <(x::Interval, y::Interval) = y > x
-<(x::Interval, y::ConcreteReal) = y > x
-<(y::ConcreteReal, x::Interval) = x > y
+<(x::Interval, y::Real) = y > x
+<(y::Real, x::Interval) = x > y
 
 <=(x::Interval, y::Interval) = !(x > y)
 >=(x::Interval, y::Interval) = !(x < y)
-<=(x::Interval, y::ConcreteReal) = !(x > y)
-<=(y::ConcreteReal, x::Interval) = !(y > x)
+<=(x::Interval, y::Real) = !(x > y)
+<=(y::Real, x::Interval) = !(y > x)
 
->=(x::Interval, y::ConcreteReal) = !(x < y)
->=(y::ConcreteReal, x::Interval) = !(x < y)
+>=(x::Interval, y::Real) = !(x < y)
+>=(y::Real, x::Interval) = !(x < y)
 +(x::Interval, y::Interval) = Interval(x.l + y.l, x.u + y.u)
 -(x::Interval, y::Interval) = Interval(x.l - y.u, x.u - y.l)
-+(x::Interval, y::ConcreteReal) = Interval(x.l + y, x.u + y)
-+(y::ConcreteReal, x::Interval) = x + y
--(x::Interval, y::ConcreteReal) = Interval(x.l - y, x.u - y)
--(y::ConcreteReal, x::Interval) = Interval(y - x.l, y - x.u)
-
-*(x::Interval, y::ConcreteReal) = Interval(x.l * y, x.u * y)
-*(y::ConcreteReal, x::Interval) = x * y
++(x::Interval, y::Real) = Interval(x.l + y, x.u + y)
++(y::Real, x::Interval) = x + y
++(x::Interval) = x
+-(x::Interval, y::Real) = Interval(x.l - y, x.u - y)
+-(y::Real, x::Interval) = Interval(y - x.l, y - x.u)
+-{T}(x::Interval{T}) = zero{T} - x
+*(x::Interval, y::Real) = Interval(x.l * y, x.u * y)
+*(y::Real, x::Interval) = x * y
 
 sqrt(x::Interval) = Interval(sqrt(x.l), sqrt(x.u))
 
@@ -129,10 +159,20 @@ end
 
 /(c::ConcreteReal, x::Interval) = convert(Interval,c) / x
 /(x::Interval, c::ConcreteReal) = x / convert(Interval,c)
+## Rationals
+//(x::Interval, y::Interval) = x / y
+//(x::Interval, c::ConcreteReal) = x / c
+//(c::ConcreteReal, x::Interval) = c / x
 
 ## Functions on Interval type
 ## ==========================
+
+## It's all Ones and Zeros
 zero(::Type{Interval}) = Interval(0.0,0.0)
+one{T}(::Type{Interval{T}}) = Interval(one(T))
+one{T}(::Interval{T}) = Interval(one{T})
+zero{T}(::Type{Interval{T}}) = Interval(zero{T})
+zero{T}(::Interval{T}) = Interval(zero{T})
 
 ## Functions on interval abstraction itself
 ## =======================================
@@ -165,19 +205,6 @@ end
 
 isapprox(x::Interval, y::Real) = isapprox(promote(x,y)...)
 isapprox(x::Real, y::Interval) = isapprox(promote(x,y)...)
-
-## Merging
-## =======
-function ⊔(a::Interval, b::Interval)
-  l = min(a.l,b.l)
-  u = max(a.u, b.u)
-  Interval(l,u)
-end
-
-⊔(a::Interval, b::ConcreteReal) = ⊔(promote(a,b)...)
-⊔(b::ConcreteReal, a::Interval) = ⊔(promote(b,a)...)
-⊔(a::Interval) = a
-⊔(a::Vector{Interval}) = reduce(⊔,a)
 
 ## Vector Interop
 ## ==============
@@ -219,3 +246,10 @@ function mid_split(i::Interval, n::Int64)
   end
   A
 end
+
+## Print
+## =====
+string(x::Interval) = "[$(x.l) $(x.u)]"
+print(io::IO, x::Interval) = print(io, string(x))
+show(io::IO, x::Interval) = print(io, string(x))
+showcompact(io::IO, x::Interval) = print(io, string(x))

@@ -12,7 +12,7 @@ isrelational(::Union(SimpleDisjunctive, Type{SimpleDisjunctive})) = false
 ## Set Operations
 ## ==============
 issubset(x::SimpleDisjunctive, y::SimpleDisjunctive) = issubset(x.values, y.values)
-overlap(x::SimpleDisjunctive, y::SimpleDisjunctive) = intersect(x.values, y.values)
+isintersect(x::SimpleDisjunctive, y::SimpleDisjunctive) = intersect(x.values, y.values)
 domaineq(x::SimpleDisjunctive, y::SimpleDisjunctive) = x.values == y.values
 ⊔{T}(x::SimpleDisjunctive{T},y::T) = push!(x.values, y)
 

@@ -2,17 +2,20 @@ module AbstractDomains
 
 import Base: convert, promote_rule
 import Base: string, print, show, showcompact
-import Base: abs, zero, in
+import Base: abs, zero, one, in, inv, ndims, issubset, union, intersect
 
-if VERSION.minor <= 3
-  typealias UInt8 Uint8
-end
+VERSION < v"0.4-" && using Docile
 
 export Interval,
        AbstractBool,
+       HyperBox,
        t,f,tf,
-       ⊔, subsumes, overlap
+       ⊔, ⊓, subsumes, isintersect, intersect, isrelational,
+       ndims,
 
+       isrelational
+
+include("common.jl")
 include("domains.jl")
 
 end

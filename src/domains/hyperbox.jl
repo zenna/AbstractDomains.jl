@@ -1,18 +1,40 @@
-import Base.in
-import Base.inv
-
+@doc """
+  An axis aligned hyperbox - a set of intervals 
+  """ ->
 type HyperBox <: Domain{Float64}
   intervals::Array{Float64,2}
 end
 
+## Domain operations
+## =================
 ndims(b::HyperBox) = size(b.intervals,2)
+isequal(x::HyperBox,y::HyperBox) = domaineq(x,y)
+isrelational(::Type{HyperBox}) = false
+
+# function ⊔(x::HyperBox, y::HyperBox) 
+#   # Need this mess to take into account x and y may have different ndim
+#   local dims; local smaller; local bigger
+#   if ndims(x) > ndims(y)
+#     smaller = y
+#     bigger = x
+#     dims = ndims(x)
+#   else
+#     smaller = x
+#     bigger = y
+#     dims = ndims(y)
+#   end
+#   joined = Array(Float64, 2, ndims)
+#   for i = 1:dims
+#     joined[i,1],joined[i,1] = 
+
+#   HyperBox([])
 
 ## Splitting
 ## =========
 mid{T<:Real}(i::Vector{T}) = i[1] + (i[2] - i[1]) / 2
 mid(b::HyperBox) = Float64[mid(b.intervals[:,i]) for i = 1:ndims(b)]
 
-# Splits a box at a split-point along all its dimensions into n^d boxes
+@doc "Splits a box at a split-point along all its dimensions into n^d boxes" ->
 function findproduct(splits::Vector{Vector{Vector{Float64}}}, b::HyperBox)
   boxes = HyperBox[]
   for subbox in product(splits...)
@@ -48,14 +70,13 @@ function partial_split_box(b::HyperBox, split_points::Dict{Int, Float64})
   findproduct(splits, b)
 end
 
-# Split box into 2^d equally sized boxes by cutting down middle of each axis"
+@doc "Split box into 2^d equally sized boxes by cutting down middle of each axis" ->
 mid_split(b::HyperBox) = split_box(b, mid(b))
 
-# Do a partial split at the midpoints of dimensiosns dims
+@doc "Do a partial split at the midpoints of dimensions `dims`" ->
 mid_partial_split(b::HyperBox, dims::Vector{Int}) =
   partial_split_box(b,[i => mid(b.intervals[:,i]) for i in dims])
 
 ## Sampling
 ## ========
-rand_interval(a::Float64, b::Float64) = a + (b - a) * rand()
 rand(b::HyperBox) = [rand_interval(b.intervals[:,i]...) for i = 1:ndims(b)]

@@ -65,8 +65,7 @@ This means that for all the elements in `A` (e.g., 1.0, 1.000001, 1.00002,...), 
 
 ```julia
 julia> A = Interval(1,2)
-[1.0 2.0]julia> A / A
-[0.5 2.0]
+[1.0 2.0]
 
 julia> A > 1.5
 {true,false}
@@ -131,13 +130,13 @@ false
 julia> subsumes(Interval(0,1),Interval(0.4,0.5))
 true
 
-julia> overlap(Interval(0,1),Interval(3,6))
+julia> isintersect(Interval(0,1),Interval(3,6))
 false
 
-julia> overlap(t,f)
+julia> isintersect(t,f)
 false
 
-julia> overlap(t,tf)
+julia> isintersect(t,tf)
 true
 
 # ⊔ (\sqcup) is a lub

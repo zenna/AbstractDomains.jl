@@ -1,6 +1,6 @@
 using AbstractDomains
 using Base.Test
-import AbstractDomains: overlap, subsumes, ⊔
+import AbstractDomains: isintersect, subsumes, ⊔
 import AbstractDomains: t, f, tf
 
 @test t & f === f
@@ -23,16 +23,16 @@ import AbstractDomains: t, f, tf
 @test (t == f) === f
 @test (f == t) === f
 
-# Overlap
-@test overlap(t,f) == false
-@test overlap(f,t) == false
-@test overlap(t,t) == true
-@test overlap(f,f) == true
-@test overlap(tf,t) == true
-@test overlap(t,tf) == true
-@test overlap(tf,f) == true
-@test overlap(f,tf) == true
-@test overlap(tf,tf) == true
+# isintersect
+@test isintersect(t,f) == false
+@test isintersect(f,t) == false
+@test isintersect(t,t) == true
+@test isintersect(f,f) == true
+@test isintersect(tf,t) == true
+@test isintersect(t,tf) == true
+@test isintersect(tf,f) == true
+@test isintersect(f,tf) == true
+@test isintersect(tf,tf) == true
 
 # Subsumes
 @test subsumes(tf,f) == true
