@@ -1,5 +1,3 @@
-ConcreteReal = Union(Float64,Int64)
-
 @doc doc"""An Interval of type 'T' between 'a' and 'b' represents all the values
   of type 'T' between 'a' and 'b'.
 """ ->
@@ -60,8 +58,8 @@ function ⊔(a::Interval, b::Interval)
   Interval(l,u)
 end
 
-⊔(a::Interval, b::ConcreteReal) = ⊔(promote(a,b)...)
-⊔(b::ConcreteReal, a::Interval) = ⊔(promote(b,a)...)
+⊔(a::Interval, b::Real) = ⊔(promote(a,b)...)
+⊔(b::Real, a::Interval) = ⊔(promote(b,a)...)
 ⊔(a::Interval) = a
 ⊔(a::Vector{Interval}) = reduce(⊔,a)
 
@@ -127,7 +125,7 @@ end
 
 # is c inside the interval
 # CODREVIEW: TESTME
-in(c::ConcreteReal, y::Interval) = y.l <= c <= y.u
+in(c::Real, y::Interval) = y.l <= c <= y.u
 
 # CODREVIEW: TESTME
 inv(x::Interval) = Interval(1/x.u,1/x.l)
@@ -157,12 +155,12 @@ function /(x::Interval, y::Interval)
   end
 end
 
-/(c::ConcreteReal, x::Interval) = convert(Interval,c) / x
-/(x::Interval, c::ConcreteReal) = x / convert(Interval,c)
+/(c::Real, x::Interval) = convert(Interval,c) / x
+/(x::Interval, c::Real) = x / convert(Interval,c)
 ## Rationals
 //(x::Interval, y::Interval) = x / y
-//(x::Interval, c::ConcreteReal) = x / c
-//(c::ConcreteReal, x::Interval) = c / x
+//(x::Interval, c::Real) = x / c
+//(c::Real, x::Interval) = c / x
 
 ## Functions on Interval type
 ## ==========================
