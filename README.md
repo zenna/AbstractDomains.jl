@@ -4,11 +4,11 @@ This Julia package allows you to run Julia programs with (possibly infinite) set
 
 [![Build Status](https://travis-ci.org/zenna/AbstractDomains.jl.svg?branch=master)](https://travis-ci.org/zenna/AbstractDomains.jl)
 
-[__Documentation__ can be found at here](abstractdomainsjl.readthedocs.org)
+[__Documentation__ can be found here](http:?/abstractdomainsjl.readthedocs.org)
 
 # Domains
 
-A abstract domain is used to represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the floating point numbers between `a` and `b`.  AbstractDomains.jl then provides functions for computing with abstract values, for instance we can add or multiple two intervals.
+An abstract domain is used to represent a large or infinite set in a finite amount of space.  For instance we can use intervals `[a, b]` to represent all the floating point numbers between `a` and `b`.  AbstractDomains.jl then provides functions for computing with abstract values, for instance we can add or multiple two intervals.
 
 Currently AbstractDomains.jl supports only two abstract domains: `Interval` and `AbstractBool`.  For every primitive functions such as `+`, `-`, `&`, `ifelse`, defined on concrete values such as `Float64` or `Bool`, there is a  corresponding *lifted* method defined on its abstract counterpart: `Interval` and `AbstractBool`.
 
