@@ -4,7 +4,7 @@ This Julia package allows you to run Julia programs with (possibly infinite) set
 
 [![Build Status](https://travis-ci.org/zenna/AbstractDomains.jl.svg?branch=master)](https://travis-ci.org/zenna/AbstractDomains.jl)
 
-[__Documentation__ can be found here](http:?/abstractdomainsjl.readthedocs.org)
+[__Documentation__ can be found here](http://abstractdomainsjl.readthedocs.org)
 
 # Domains
 
