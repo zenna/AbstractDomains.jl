@@ -3,8 +3,8 @@ abstract Domain{T}
 
 for finame in ["bool.jl",
                "interval.jl",
-               "hyperbox.jl"]
-    include(joinpath("domains", finame))
+               "boxes.jl"]
+  include(joinpath("domains", finame))
 end
 
 ## Domain General Doc
@@ -13,3 +13,4 @@ end
 @doc doc"Is domain `y` a subset of domain `x`" -> subsumes
 @doc doc"Is the intersection of two domains non-empty"  -> isintersect
 @doc doc"Does domain `x` and domain `y` represent the same set of points" -> domaineq
+@doc doc"Unit interval [0,1]" -> unit

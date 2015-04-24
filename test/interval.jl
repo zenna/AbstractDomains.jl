@@ -46,6 +46,10 @@ using Base.Test
 @test abs(Interval(2,5)) === Interval(2,5)
 @test sqr(Interval(-4,4)) === Interval(0,16)
 
+# unit
+@test unit(Interval{Float64}) === Interval(0.0,1.0)
+@test unit(Interval{Int}) === Interval(0,1)
+
 # Division
 @test Interval(9,18) / Interval(2,3) === Interval(3.0,9.0)
 @test makepos(Interval(-2,5)) === Interval(0,5)

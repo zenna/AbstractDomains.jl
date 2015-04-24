@@ -1,10 +1,3 @@
-@doc """
-  An axis aligned hyperbox - a set of intervals 
-  """ ->
-type HyperBox{T}
-  intervals::Vector{Interval{T}}
-end
-
 HyperBox{T}(a::Array{T,2}) = HyperBox{T}([Interval(a[1,i],a[2,i]) for i=1:size(a,2)])
 
 ##
@@ -13,11 +6,12 @@ getindex(b::HyperBox, i::Int) = b.intervals[i]
 ## Domain operations
 ## =================
 ndims(b::HyperBox) = length(b.intervals)
+dims(b::HyperBox) = collect(1:ndims(b)) # make this iterable?
 domaineq(x::HyperBox,y::HyperBox) = isequal(x,y)
-isequal(x::HyperBox,y::HyperBox) = all([isequal(x[i],y[i]) for i = 1:ndims(x)]) 
+isequal(x::HyperBox,y::HyperBox) = all([isequal(x[i],y[i]) for i = 1:ndims(x)])
 isrelational(::Type{HyperBox}) = false
 
-# function ⊔(x::HyperBox, y::HyperBox) 
+# function ⊔(x::HyperBox, y::HyperBox)
 #   # Need this mess to take into account x and y may have different ndim
 #   local dims; local smaller; local bigger
 #   if ndims(x) > ndims(y)
@@ -31,7 +25,7 @@ isrelational(::Type{HyperBox}) = false
 #   end
 #   joined = Array(Float64, 2, ndims)
 #   for i = 1:dims
-#     joined[i,1],joined[i,1] = 
+#     joined[i,1],joined[i,1] =
 
 #   HyperBox([])
 
@@ -41,35 +35,48 @@ mid{T}(b::HyperBox{T}) = T[mid(b[i]) for i = 1:ndims(b)]
 
 # Find cartesian product of a bunch of subboxes
 function prodsubboxes{T}(splits::Vector{Vector{Interval{T}}})
-  boxes = HyperBox{T}[]
+  @compat boxes = Tuple{Vararg{Interval}}[]
   for subbox in product(splits...)
-    push!(boxes, HyperBox(Interval{T}[subbox...])) # product returns tuple
+    push!(boxes, subbox) # product returns tuple
   end
   return boxes
 end
 
+# @compat function convert{T,T2}(::Vector{HyperBox{T}}, x::Vector{Tuple{Vararg{Interval{T2}}}})
+#   HyperBox[HyperBox([intervals...]) for intervals in intervals_set]
+# end
+
 @doc "Split box into 2^d equally sized boxes by cutting down middle of each axis" ->
-function split_box(b::HyperBox, split_point::Vector{Float64})
+function split_box{T}(b::HyperBox{T}, split_point::Vector{T})
   @assert(length(split_point) == ndims(b))
   splits = [split_box(b[i],split_point[i]) for i = 1:ndims(b)]
+  intervals_set = prodsubboxes(splits)
+  @show typeof(intervals_set)
+  HyperBox[HyperBox([intervals...]) for intervals in intervals_set]
+#   convert(Vector{HyperBox},intervals_set)
+end
+
+function product_boxes{B<:Boxes,T}(b::B, split_point::Dict{Int, T})
+  @assert(length(keys(split_point)) <= ndims(b))
+
+  splits = Vector{Interval{T}}[]
+  for dim in dims(b)
+    if haskey(split_point, dim)
+      push!(splits, split_box(b[dim],split_point[dim]))
+    else # Don't split along this dimension
+      push!(splits, [b[dim]])
+    end
+  end
   prodsubboxes(splits)
 end
 
 @doc doc"""Split a box along not all dimensions.
   `split_point` maps integer dimensions to point in that dimension to split""" ->
-function partial_split_box{T}(b::HyperBox{T}, split_point::Dict{Int, Float64})
+function partial_split_box{T}(b::HyperBox{T}, split_point::Dict{Int, T})
   @assert(length(keys(split_point)) <= ndims(b))
-
-  boxes = HyperBox[]
-  splits = Vector{Interval{T}}[]
-  for i = 1:ndims(b)
-    if haskey(split_point, i)
-      push!(splits, split_box(b[i],split_point[i]))
-    else # Don't split along this dimension
-      push!(splits, [b[i]])
-    end
-  end
-  prodsubboxes(splits)
+  intervals_set = product_boxes(b, split_point)
+  HyperBox[HyperBox([intervals...]) for intervals in intervals_set]
+#   convert(Vector{HyperBox},intervals_set)
 end
 
 @doc "Split box into 2^d equally sized boxes by cutting down middle of each axis" ->

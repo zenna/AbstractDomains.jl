@@ -10,13 +10,15 @@ using Compat
 VERSION < v"0.4-" && using Docile
 
 export Interval,
+       Domain,
        AbstractBool,
-       HyperBox,
+       Boxes, HyperBox,LazyBox,
        t,f,tf,
-       ⊔, ⊓, subsumes, isintersect, intersect, isrelational,
+       ⊔, ⊓, subsumes, isintersect, intersect, isrelational, domaineq,
        ndims,
        getindex,
        mid, mid_split, partial_split_box, mid_partial_split,
+       unit,
 
        isrelational
 
