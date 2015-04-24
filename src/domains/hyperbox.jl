@@ -7,9 +7,18 @@ end
 
 ## Domain operations
 ## =================
+a = HyperBox([0.0 0.0 0.0
+              1.0 1.0 1.0])
+b = HyperBox([0.0 0.0 0.0 0.0
+              1.0 1.0 1.0 1.0])
+using Base.Test
 ndims(b::HyperBox) = size(b.intervals,2)
+@test ndims(a) == 3
 isequal(x::HyperBox,y::HyperBox) = domaineq(x,y)
+@test a != b
 isrelational(::Type{HyperBox}) = false
+@test isrelational(HyperBox) == false
+@test mid_split(a, [0.5,0.5,0.5]) == HyperBox[]
 
 # function ⊔(x::HyperBox, y::HyperBox) 
 #   # Need this mess to take into account x and y may have different ndim
@@ -32,7 +41,7 @@ isrelational(::Type{HyperBox}) = false
 ## Splitting
 ## =========
 mid{T<:Real}(i::Vector{T}) = i[1] + (i[2] - i[1]) / 2
-mid(b::HyperBox) = Float64[mid(b.intervals[:,i]) for i = 1:ndims(b)]
+mid(b::HyperBox{T}) = T[mid(b.intervals[:,i]) for i = 1:ndims(b)]
 
 @doc "Splits a box at a split-point along all its dimensions into n^d boxes" ->
 function findproduct(splits::Vector{Vector{Vector{Float64}}}, b::HyperBox)

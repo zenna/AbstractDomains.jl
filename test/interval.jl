@@ -59,3 +59,7 @@ using Base.Test
 @test convert(Interval{Float64}, 3) === Interval{Float64}(3.0,3.0)
 @test convert(Interval{Float64}, Interval(1,2)) === Interval(1.0,2.0)
 @test (promote(Interval(3,5),Interval(10.0,20.0))) === (Interval(3.0,5.0),Interval(10.0,20.0))
+
+# rand
+@test all(i->-100<=i<=100,rand(Interval(-100,100),100))
+@test all(i->-100.<=i<=100.,rand(Interval(-100.,100.),100))

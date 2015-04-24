@@ -1,7 +1,8 @@
 using AbstractDomains
 
 tests = ["bool",
-         "interval"]
+         "interval",
+         "hyperbox"]
 
 println("Running tests:")
 

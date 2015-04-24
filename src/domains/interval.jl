@@ -210,8 +210,8 @@ l{T<:Real}(v::Vector{T}) = v[1]
 u{T<:Real}(v::Vector{T}) = v[2]
 l(x::Interval) = x.l
 u(x::Interval) = x.u
-pair(T::Type{Interval},low,up) = Interval(low,up)
-pair(T::Type{Vector{Float64}},low,up) = [low,up]
+pair{T}(::Type{Interval{T}},low,up) = Interval(low,up)
+pair(::Type{Vector{Float64}},low,up) = [low,up]
 Pair = Union(Vector{Float64},Interval)
 
 ## Splitting
@@ -244,6 +244,12 @@ function mid_split(i::Interval, n::Int64)
   end
   A
 end
+
+## Sampling
+## ========
+rand{T<:FloatingPoint}(x::Interval{T}) =  x.l + (x.u - x.l) * rand(T)
+rand{T<:Integer}(x::Interval{T}) = randi(x.l,x.u)
+rand{T<:Real}(x::Interval{T},n::Int) = T[rand(x) for i = 1:n]
 
 ## Print
 ## =====
