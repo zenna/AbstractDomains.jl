@@ -51,7 +51,6 @@ function split_box{T}(b::HyperBox{T}, split_point::Vector{T})
   @assert(length(split_point) == ndims(b))
   splits = [split_box(b[i],split_point[i]) for i = 1:ndims(b)]
   intervals_set = prodsubboxes(splits)
-  @show typeof(intervals_set)
   HyperBox[HyperBox([intervals...]) for intervals in intervals_set]
 #   convert(Vector{HyperBox},intervals_set)
 end
