@@ -1,5 +1,6 @@
 using AbstractDomains
 using Base.Test
+using Compat
 
 a = HyperBox([0.0 0.0 0.0
               1.0 1.0 1.0])
@@ -24,6 +25,16 @@ c3 = HyperBox([0.0 next
 c4 = HyperBox([next next
                1.0  1.0])
 q = mid_split(c)
+
+# Partial Split
+d = HyperBox([0.0 0.0 0.0
+              10.0 20.0 1.0])
+@compat split_points = Dict(1 => 5.0, 3 => 0.5)
+@test length(partial_split_box(d,split_points)) == 4
+@test length(mid_partial_split(d,[1,2,3])) == 8
+@compat split_points2 = Dict(1 => 5.0, 2=> 0.1, 3 => 0.5)
+@test length(partial_split_box(d,split_points2)) == 8
+
 
 @test isequal(q[1],c1)
 @test isequal(q[2],c2)

@@ -26,15 +26,6 @@ convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, c::T2) = Interval{T1}(c,c)
 promote_rule{T1<:Real, T2<:Real}(::Type{Interval{T1}}, ::Type{T2}) = Interval{T1}
 promote_rule{T1<:Real, T2<:Real}(::Type{Interval{T1}}, ::Type{Interval{T2}}) = Interval{promote_type(T1,T2)}
 
-# function convert{T}(::Type{HyperBox{T}}, i::Vector{Interval{T}})
-#   intervals = Array(T,2,length(i))
-#   for j in 1:length(i)
-#     intervals[:,j] = [i[j].l i[j].u]
-#   end
-#   HyperBox(intervals)
-# end
-# convert(::Type{Vector{Interval}}, b::HyperBox) = [Interval(b.intervals[:,i]) for i = 1:ndims(b)]
-
 ## Domain operations
 ## =================
 ndims(i::Interval) = 1
