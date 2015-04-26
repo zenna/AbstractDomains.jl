@@ -1,3 +1,7 @@
+## Type Hierarchy
+
+## Random Number Generation
+## =========================
 @doc "Random number between `a` and `b`" ->
 rand_interval(a::Float64, b::Float64) = a + (b - a) * rand()
 
@@ -12,6 +16,7 @@ immutable RandIntSampler  # for generating Int samples in [0, K-1]
     @compat RandIntSampler(a::Int, b::Int) = (Ku = UInt(b-a+1); new(a, Ku, div(typemax(UInt), Ku) * Ku))
 end
 
+# algo http://stackoverflow.com/questions/2509679/how-to-generate-a-random-number-from-within-a-range/6852396#6852396
 function rand(s::RandIntSampler)
     x = rand(UInt)
     while x >= s.U

@@ -1,5 +1,20 @@
-# Abstract domains represent sets of finite values
+@doc "Abstract domains represent sets of finite values
+  They are paramaterise by T which determines the type of values it represents" ->
 abstract Domain{T}
+
+# # Does the abstract domain represent a single variable or a set of variables
+# abstract VariateForm
+# type Univariate    <: VariateForm end
+# type Multivariate  <: VariateForm end
+
+# # Is it disjunctive or not
+# # Is it relational or not
+
+# abstract ValueSupport
+# type Discrete   <: ValueSupport end
+# type Continuous <: ValueSupport end
+
+
 
 for finame in ["bool.jl",
                "interval.jl",

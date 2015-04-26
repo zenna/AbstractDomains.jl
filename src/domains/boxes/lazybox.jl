@@ -12,6 +12,7 @@ end
 setindex!{T}(b::LazyBox{T}, val::Interval{T}, key::Int) = o.intervals[key] = val
 ndims(b::LazyBox) = length(keys(b.intervals))
 dims(b::LazyBox) = keys(b.intervals)
+hasdim(b::LazyBox, i::Int) = haskey(b.intervals,i)
 
 ## Conversion
 ## ==========
