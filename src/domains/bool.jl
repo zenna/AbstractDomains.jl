@@ -11,6 +11,26 @@ const tf = AbstractBool(0x3)
 promote_rule(::Type{Bool}, ::Type{AbstractBool}) = AbstractBool
 convert(::Type{AbstractBool}, b::Bool) = if b t else f end
 
+
+## AbstractBool Set Operations
+## ===========================
+subsumes(x::AbstractBool, y::AbstractBool) = x === tf || x === y
+subsumes(x::AbstractBool, y::Bool) = subsumes(x,convert(AbstractBool, y))
+
+isintersect(x::AbstractBool, y::AbstractBool) = !((x === t && y === f) || (x === f && y === t))
+isintersect(x::AbstractBool, y::Bool) = isintersect(x,convert(AbstractBool, y))
+isintersect(x::Bool, y::AbstractBool) = isintersect(convert(AbstractBool, x),y)
+
+isrelational(::Type{AbstractBool}) = false
+isabstract(c::Type{Bool}, a::Type{AbstractBool}) = true
+
+⊔(a::AbstractBool) = a
+⊔(a::AbstractBool, b::AbstractBool) = a === b ? a : tf
+⊔(a::Bool, b::AbstractBool) = ⊔(convert(AbstractBool,a),b)
+⊔(a::AbstractBool, b::Bool) = ⊔(a,convert(AbstractBool,b))
+⊔(a::Bool, b::Bool) = a === b ? convert(AbstractBool,a) : tf
+
+
 ## =========================
 ## Lifted Boolean Arithmetic
 
@@ -56,22 +76,17 @@ end
 (&)(x::AbstractBool, y::Bool) = x & convert(AbstractBool, y)
 (&)(y::Bool, x::AbstractBool) = convert(AbstractBool, y) & x
 
-## AbstractBool Set Operations
-## ===========================
-subsumes(x::AbstractBool, y::AbstractBool) = x === tf || x === y
-subsumes(x::AbstractBool, y::Bool) = subsumes(x,convert(AbstractBool, y))
-
-isintersect(x::AbstractBool, y::AbstractBool) = !((x === t && y === f) || (x === f && y === t))
-isintersect(x::AbstractBool, y::Bool) = isintersect(x,convert(AbstractBool, y))
-isintersect(x::Bool, y::AbstractBool) = isintersect(convert(AbstractBool, x),y)
-
-isrelational(::Type{AbstractBool}) = false
-
-⊔(a::AbstractBool) = a
-⊔(a::AbstractBool, b::AbstractBool) = a === b ? a : tf
-⊔(a::Bool, b::AbstractBool) = ⊔(convert(AbstractBool,a),b)
-⊔(a::AbstractBool, b::Bool) = ⊔(a,convert(AbstractBool,b))
-⊔(a::Bool, b::Bool) = a === b ? convert(AbstractBool,a) : tf
+# When condition is TF we need to evaluate both branches
+# and merge with ⊔
+function ifelse(c::AbstractBool, x, y)
+  if c === t
+    x
+  elseif c === f
+    y
+  elseif c === tf
+    ⊔(x,y)
+  end
+end
 
 ## Printing
 ## ========

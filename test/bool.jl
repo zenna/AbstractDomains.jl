@@ -49,3 +49,8 @@ import AbstractDomains: t, f, tf
 @test ⊔(tf,t) === ⊔(t,tf) === tf
 @test ⊔(tf,f) === ⊔(f,tf) === tf
 @test ⊔(tf,tf) === tf
+
+#ifelse
+@test ifelse(tf,f,t) === tf
+@test ifelse(t,f,t) === f
+@test ifelse(f,f,t) === t

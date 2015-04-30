@@ -10,14 +10,15 @@ hasdim(b::HyperBox, i::Int) = i <= ndims(b)
 
 ## Splitting
 ## =========
+mid{T}(b::HyperBox{T}) = T[mid(b[dim]) for dim in dims(b)]
+
 @doc "Split box into 2^d equally sized boxes by cutting down middle of each axis" ->
 function split_box{T}(b::HyperBox{T}, split_point::Vector{T})
   @assert(length(split_point) == ndims(b))
-  splits = [split_box(b[i],split_point[i]) for i = 1:ndims(b)]
+  splits = [split_box(b[i],split_point[i]) for i = 1:ndims(b)] # Split intervals
   intervals_set = prodsubboxes(splits)
   HyperBox[HyperBox([intervals...]) for intervals in intervals_set]
 end
-
 
 @doc doc"""Split a box along not all dimensions.
   `split_point` maps integer dimensions to point in that dimension to split""" ->

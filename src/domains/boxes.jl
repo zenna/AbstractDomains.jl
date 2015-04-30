@@ -43,7 +43,7 @@ function product_boxes{T}(b::Boxes, split_point::Dict{Int, T})
   prodsubboxes(splits)
 end
 
-# Find cartesian product of a bunch of subboxes
+# Find cartesian product of a bunch of subboxes (vector of intervals)
 function prodsubboxes{T}(splits::Vector{Vector{Interval{T}}})
   @compat boxes = Tuple{Vararg{Interval}}[]
   for subbox in product(splits...)
@@ -52,7 +52,6 @@ function prodsubboxes{T}(splits::Vector{Vector{Interval{T}}})
   return boxes
 end
 
-@doc "Find midpoint of box " ->
 mid{T}(b::Boxes{T}) = T[mid(b[dim]) for dim in dims(b)]
 
 @doc "Split box into 2^d equally sized boxes by cutting down middle of each axis" ->

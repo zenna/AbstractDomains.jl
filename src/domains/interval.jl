@@ -57,6 +57,8 @@ end
 isequal(x::Interval,y::Interval) = domaineq(x,y)
 isrelational(::Type{Interval}) = false
 
+isabstract{T<:Real}(c::Type{T}, a::Type{Interval{T}}) = true
+
 ## Interval Arithmetic and Inequalities
 ## ====================================
 

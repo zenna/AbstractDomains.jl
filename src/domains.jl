@@ -29,3 +29,4 @@ end
 @doc doc"Is the intersection of two domains non-empty"  -> isintersect
 @doc doc"Does domain `x` and domain `y` represent the same set of points" -> domaineq
 @doc doc"Unit interval [0,1]" -> unit
+@doc doc"Find midpoint of numerical domain " -> mid
