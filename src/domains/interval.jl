@@ -243,7 +243,7 @@ end
 ## Sampling
 ## ========
 rand{T<:FloatingPoint}(x::Interval{T}) =  x.l + (x.u - x.l) * rand(T)
-rand{T<:Integer}(x::Interval{T}) = randi(x.l,x.u)
+rand{T<:Integer}(x::Interval{T}) = rand(UnitRange(x.l,x.u))
 rand{T<:Real}(x::Interval{T},n::Int) = T[rand(x) for i = 1:n]
 
 ## Print
