@@ -10,6 +10,8 @@ end
 Interval{T<:Real}(x::T) = Interval{T}(x,x)
 Interval{T<:Real}(v::Vector{T}) = Interval(v[1],v[2])
 Interval{T<:Real}(x::T,y::T) = Interval{T}(x,y)
+Interval{T1<:Real, T2<:Real}(x::T1,y::T2) = Interval{promote_type(T1,T2)}(promote(x,y)...)
+
 
 ## Conversions and Promotion
 ## =========================

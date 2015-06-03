@@ -24,6 +24,9 @@ isintersect(x::Bool, y::AbstractBool) = isintersect(convert(AbstractBool, x),y)
 isrelational(::Type{AbstractBool}) = false
 isabstract(c::Type{Bool}, a::Type{AbstractBool}) = true
 
+isequal(x::AbstractBool, y::AbstractBool) = x.v == y.v
+domaineq(x::AbstractBool, y::AbstractBool) = x.v == y.v
+
 ⊔(a::AbstractBool) = a
 ⊔(a::AbstractBool, b::AbstractBool) = a === b ? a : tf
 ⊔(a::Bool, b::AbstractBool) = ⊔(convert(AbstractBool,a),b)

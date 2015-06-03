@@ -19,7 +19,7 @@ export Interval,
        mid, mid_split, partial_split_box, mid_partial_split,
        unit,
        dims,
-
+       hasdim,
        isrelational
 
 include("common.jl")
