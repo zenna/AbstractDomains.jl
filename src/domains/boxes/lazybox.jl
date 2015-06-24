@@ -36,8 +36,35 @@ end
 partial_split_box{T}(b::LazyBox{T}, split_point::Dict{Int,T}) =
   split_box(b,split_point)
 
-rand{T<:Real}(b::LazyBox{T}) =
-  @compat Dict{Int,T}([dim => rand(interval) for (dim,interval) in b.intervals])
+## Rand
+@doc doc"""A Vector of whose values are sampled uniformly from [0,1], but are not
+  created until accessed (hence Lazy).""" ->
+immutable LazyRandomVector{T<:Real}
+  samples::Dict{Int64,T}
+end
+LazyRandomVector{T<:Real}(T1::Type{T}) = LazyRandomVector(Dict{Int64,T1}())
+
+function getindex{T}(o::LazyRandomVector{T}, key::Int)
+  if haskey(o.samples,key)
+    o.samples[key]
+  else
+    i = rand(T)
+    o.samples[key] = i
+    i
+  end
+end
+
+function setindex!{T}(o::LazyRandomVector{T}, val::T, key::Int)
+  o.samples[key] = val
+end
+
+function rand{T<:Real}(b::LazyBox{T})
+  l = LazyRandomVector(T)
+  for (dim,interval) in b.intervals
+    l[dim] = rand(interval)
+  end
+  l
+end
 
 ## Print
 ## =====
