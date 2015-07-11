@@ -165,9 +165,9 @@ unit{T}(::Type{Interval{T}}) = Interval(zero(T), one(T))
 ## It's all Ones and Zeros
 zero(::Type{Interval}) = Interval(0.0,0.0)
 one{T}(::Type{Interval{T}}) = Interval(one(T))
-one{T}(::Interval{T}) = Interval(one{T})
-zero{T}(::Type{Interval{T}}) = Interval(zero{T})
-zero{T}(::Interval{T}) = Interval(zero{T})
+one{T}(::Interval{T}) = Interval(one(T))
+zero{T}(::Type{Interval{T}}) = Interval(zero(T))
+zero{T}(::Interval{T}) = Interval(zero(T))
 
 ## Functions on interval abstraction itself
 ## =======================================
