@@ -39,7 +39,7 @@ isintersect(x::Interval, y::Interval) = y.l <= x.u && x.l <= y.u
 domaineq(x::Interval, y::Interval) = x.u == y.u && x.l == y.l
 
 @doc "Construct interval which is intersection of two intervals" ->
-intersect{T}(x::Interval{T}, y::Interval{T}) = Interval(max(a.l, y.l), min(a.u, y.u))
+intersect{T}(x::Interval{T}, y::Interval{T}) = Interval(max(x.l, y.l), min(x.u, y.u))
 intersect{T,S}(a::Interval{T}, b::Interval{S}) = intersect(promote(a,b)...)
 ⊓ = intersect
 
@@ -160,7 +160,8 @@ end
 ## Functions on Interval type
 ## ==========================
 
-unit{T}(::Type{Interval{T}}) = Interval(zero(T), one(T))
+unit{T}(::Type{Interval{T}}) = Interval{T}(zero(T), one(T))
+unit{T}(::Interval{T}) = Interval{T}(zero(T), one(T))
 
 ## It's all Ones and Zeros
 zero(::Type{Interval}) = Interval(0.0,0.0)
