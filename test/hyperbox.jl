@@ -41,4 +41,4 @@ d = HyperBox([0.0 0.0 0.0
 @test isequal(q[3],c3)
 @test isequal(q[4],c4)
 
-@test all([0 <= rb <= 1 for rb in rand(b)])
+@test reduce(&, [0 <= rb <= 1 for rb in rand(b)])
