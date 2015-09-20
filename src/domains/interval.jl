@@ -20,7 +20,7 @@ Interval{T1<:Real, T2<:Real}(x::T1,y::T2) = Interval{promote_type(T1,T2)}(promot
 function convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, x::Interval{T2})
   T = promote_type(T1,T2)
   Interval{T}(convert(T,x.l),convert(T,x.u))
-end 
+end
 convert{T<:Real}(::Type{Interval}, c::T) = Interval{T}(c,c)
 convert{T<:Real}(::Type{Interval{T}}, c::T) = Interval{T}(c,c)
 convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, c::T2) = Interval{T1}(c,c)
@@ -93,7 +93,8 @@ end
 <=(y::Real, x::Interval) = !(y > x)
 
 >=(x::Interval, y::Real) = !(x < y)
->=(y::Real, x::Interval) = !(x < y)
+>=(y::Real, x::Interval) = !(y < x)
+
 +(x::Interval, y::Interval) = Interval(x.l + y.l, x.u + y.u)
 -(x::Interval, y::Interval) = Interval(x.l - y.u, x.u - y.l)
 +(x::Interval, y::Real) = Interval(x.l + y, x.u + y)
