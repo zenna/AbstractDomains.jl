@@ -4,6 +4,31 @@ import Base: convert, promote_rule
 import Base: string, print, show, showcompact, rand
 import Base: abs, zero, one, in, inv, ndims, issubset, union, intersect, isequal, ifelse
 
+import Base: !
+import Base: ==
+import Base: ==
+import Base: ==
+import Base: ==
+import Base: |
+import Base: &
+import Base: ==
+import Base: !=
+import Base: ==
+import Base: ==
+import Base: >
+import Base: <
+import Base: <
+import Base: <
+import Base: <=
+import Base: >=
+import Base: +
+import Base: -
+import Base: *
+import Base: /
+import Base: //
+import Base: getindex
+import Base: setindex!
+
 using Iterators
 using Compat
 VERSION < v"0.4-" && using Docile
