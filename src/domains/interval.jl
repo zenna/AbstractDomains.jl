@@ -211,7 +211,7 @@ l(x::Interval) = x.l
 u(x::Interval) = x.u
 pair{T}(::Type{Interval{T}},low,up) = Interval(low,up)
 pair(::Type{Vector{Float64}},low,up) = [low,up]
-Pair = Union(Vector{Float64},Interval)
+Pair = Union{Vector{Float64},Interval}
 
 ## Splitting
 ## =========
@@ -246,7 +246,7 @@ end
 
 ## Sampling
 ## ========
-rand{T<:FloatingPoint}(x::Interval{T}) =  x.l + (x.u - x.l) * rand(T)
+rand{T<:AbstractFloat}(x::Interval{T}) =  x.l + (x.u - x.l) * rand(T)
 rand{T<:Integer}(x::Interval{T}) = rand(UnitRange(x.l,x.u))
 rand{T<:Real}(x::Interval{T},n::Int) = T[rand(x) for i = 1:n]
 

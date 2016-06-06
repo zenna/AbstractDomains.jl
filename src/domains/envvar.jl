@@ -1,5 +1,5 @@
 # Variables which can be multiple values
-NotEnv = Union(Float64, Bool, AbstractBool, Array, Int64, Interval)
+NotEnv = Union{Float64, Bool, AbstractBool, Array, Int64, Interval}
 immutable EnvVar{K,V}
   worlds::Dict{K,NotEnv}
 
@@ -87,7 +87,7 @@ function isintersect(a::AbstractBool, e::EnvVar)
   doesisintersect
 end
 
-ConcreteValue = Union(Float64, Int64, Bool)
+ConcreteValue = Union{Float64, Int64, Bool}
 
 #FIXME, IVE GOT IN and SIZE AS ASSOCIATE BUT ITS NOT
 for op = (:+, :-, :*, :>, :>=, :<=, :<, :&, :|, :in, :/, :size)

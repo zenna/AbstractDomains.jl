@@ -7,7 +7,7 @@ immutable SimpleDisjunctive{T} <: Domain{T}
   values::Set{T}
 end
 
-isrelational(::Union(SimpleDisjunctive, Type{SimpleDisjunctive})) = false
+isrelational(::Union{SimpleDisjunctive, Type{SimpleDisjunctive}}) = false
 
 ## Set Operations
 ## ==============

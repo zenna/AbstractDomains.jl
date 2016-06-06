@@ -1,7 +1,7 @@
 @doc doc"Abstract Boolean Types: {{true},{false}.{true,false}}" ->
 immutable AbstractBool <: Domain{Bool}
-  v::Uint8
-  AbstractBool(v::Uint8) = (@assert v == 0x1 || v == 0x2 || v== 0x3; new(v))
+  v::UInt8
+  AbstractBool(v::UInt8) = (@assert v == 0x1 || v == 0x2 || v== 0x3; new(v))
 end
 
 const t = AbstractBool(0x1)

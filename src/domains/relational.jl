@@ -7,7 +7,7 @@ immutable Relational{T} <: Domain{T}
 end
 
 # This domain is relational, duh
-isrelational(::Union(Relational, Type{Relational})) = true
+isrelational(::Union{Relational, Type{Relational}}) = true
 
 ## Set Operations
 ## ==============
