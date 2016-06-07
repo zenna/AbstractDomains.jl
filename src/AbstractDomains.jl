@@ -31,7 +31,6 @@ import Base: setindex!
 
 using Iterators
 using Compat
-VERSION < v"0.4-" && using Docile
 
 export Interval,
        Domain,
