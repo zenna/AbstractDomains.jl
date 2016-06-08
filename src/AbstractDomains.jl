@@ -3,6 +3,7 @@ module AbstractDomains
 import Base: convert, promote_rule
 import Base: string, print, show, showcompact, rand
 import Base: abs, zero, one, in, inv, ndims, issubset, union, intersect, isequal, ifelse
+import Base: !, ==, |, &, !=, >, <, <=, >=, +, -, *, /, //, getindex, getindex!, setindex
 
 import Base: !
 import Base: ==
