@@ -59,7 +59,7 @@ mid_split(b::Boxes) = split_box(b, mid(b))
 
 @doc "Do a partial split at the midpoints of dimensions `dims`" ->
 mid_partial_split(b::Boxes, partial_dims::Vector{Int}) =
-  @compat partial_split_box(b,Dict([dim => mid(b[dim]) for dim in partial_dims]))
+  @compat partial_split_box(b,Dict(dim => mid(b[dim]) for dim in partial_dims))
 
 ## Sampling
 ## ========

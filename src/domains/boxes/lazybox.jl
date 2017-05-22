@@ -24,8 +24,8 @@ convert(::Type{HyperBox}, l::LazyBox) = HyperBox(convert(Vector{Interval},l))
 
 # ## Splitting
 # ## =========
-mid{T}(b::LazyBox{T}) = 
-  Dict([dim => mid(interval) for (dim,interval) in b.intervals])
+mid{T}(b::LazyBox{T}) =
+  Dict(dim => mid(interval) for (dim,interval) in b.intervals)
 
 function split_box{T}(b::LazyBox{T}, split_point::Dict{Int,T})
   ks = collect(keys(b.intervals))

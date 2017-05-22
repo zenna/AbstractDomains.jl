@@ -47,9 +47,6 @@ function !(b::AbstractBool)
   end
 end
 
-(==)(x::AbstractBool, y::AbstractBool) =
-  x === tf || y === tf ? tf : x === t && y === t || x === f && y === f
-
 function (==)(x::AbstractBool, y::AbstractBool)
   if x === tf || y === tf tf
   elseif x === t && y === t t
