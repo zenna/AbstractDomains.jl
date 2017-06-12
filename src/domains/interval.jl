@@ -4,7 +4,7 @@
 immutable Interval{T<:Real} <: Domain{T}
   l::T
   u::T
-  Interval(l,u) =  if u > l new(l, u) else new(u,l) end
+  Interval{T}(l,u) where {T<:Real} = if u > l new(l, u) else new(u,l) end
 end
 
 Interval{T<:Real}(x::T) = Interval{T}(x,x)

@@ -1,6 +1,6 @@
 @doc "Abstract domains represent sets of finite values
   They are paramaterise by T which determines the type of values it represents" ->
-abstract Domain{T}
+abstract type Domain{T} end
 
 # # Does the abstract domain represent a single variable or a set of variables
 # abstract VariateForm

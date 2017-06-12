@@ -12,7 +12,7 @@ immutable LazyBox{T} <: Domain{T}
 end
 
 @doc "Boxes are abstractions of Vector{T<:Real}" ->
-typealias Boxes{T} Union{LazyBox{T},HyperBox{T}}
+Boxes{T} = Union{LazyBox{T},HyperBox{T}}
 
 ## Domain Operations
 ## =================
