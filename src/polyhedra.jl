@@ -1,6 +1,6 @@
 ## Convex Polyhedra
 ## ================
-convert( ::Type{Ptr{Ptr{UInt8}}}, s::Array{ASCIIString,1} ) = map(pointer ,s)
+convert(::Type{Ptr{Ptr{UInt8}}}, s::Array{ASCIIString,1}) = map(pointer ,s)
 
 pplisinitailsed = false
 

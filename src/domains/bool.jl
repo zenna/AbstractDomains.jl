@@ -1,7 +1,11 @@
-@doc doc"Abstract Boolean Types: {{true},{false}.{true,false}}" ->
-immutable AbstractBool <: Domain{Bool}
-  v::UInt8
-  AbstractBool(v::UInt8) = (@assert v == 0x1 || v == 0x2 || v== 0x3; new(v))
+"""
+    AbstractBool <: Domain{Bool}
+
+Abstract Boolean Types: {{true},{false}.{true,false}}
+"""
+struct AbstractBool <: Domain{Bool}
+    v::UInt8
+    AbstractBool(v::UInt8) = (@assert v == 0x1 || v == 0x2 || v== 0x3; new(v))
 end
 
 const t = AbstractBool(0x1)
@@ -10,7 +14,6 @@ const tf = AbstractBool(0x3)
 
 promote_rule(::Type{Bool}, ::Type{AbstractBool}) = AbstractBool
 convert(::Type{AbstractBool}, b::Bool) = if b t else f end
-
 
 ## AbstractBool Set Operations
 ## ===========================
@@ -92,5 +95,9 @@ end
 ## ========
 string(x::AbstractBool) = ["{true}","{false}","{true,false}"][x.v]
 print(io::IO, x::AbstractBool) = print(io, string(x))
+
 show(io::IO, x::AbstractBool) = print(io, string(x))
-showcompact(io::IO, x::AbstractBool) = print(io, string(x))
+
+# FIXME GJL. Probably not needed
+# show(IOContext(stdout, :compact => true), x)
+# showcompact(io::IO, x::AbstractBool) = print(io, string(x))

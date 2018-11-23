@@ -1,32 +1,33 @@
-@doc doc"""An Interval of type 'T' between 'a' and 'b' represents all the values
-  of type 'T' between 'a' and 'b'.
-""" ->
-immutable Interval{T<:Real} <: Domain{T}
+"""
+    Interval{T<:Real} <: Domain{T}
+
+An Interval of type 'T' between 'a' and 'b' represents all the values of type 'T' between 'a' and 'b'.
+"""
+struct Interval{T<:Real} <: Domain{T}
   l::T
   u::T
   Interval{T}(l,u) where {T<:Real} = if u > l new(l, u) else new(u,l) end
 end
 
-Interval{T<:Real}(x::T) = Interval{T}(x,x)
-Interval{T<:Real}(v::Vector{T}) = Interval(v[1],v[2])
-Interval{T<:Real}(x::T,y::T) = Interval{T}(x,y)
-Interval{T1<:Real, T2<:Real}(x::T1,y::T2) = Interval{promote_type(T1,T2)}(promote(x,y)...)
-
+Interval(x::Real) = Interval{typeof(x)}(x,x)
+Interval(v::Vector{T}) where T <: Real = Interval(v[1],v[2])
+Interval(x::T,y::T) where T <: Real = Interval{T}(x,y)
+Interval(x::T1,y::T2) where {T1<:Real, T2<:Real} = Interval{promote_type(T1,T2)}(promote(x,y)...)
 
 ## Conversions and Promotion
 ## =========================
 
 # A concrete number can be coerced into an interval with no width
-function convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, x::Interval{T2})
+function convert(::Type{Interval{T1}}, x::Interval{T2}) where {T1<:Real, T2<:Real}
   T = promote_type(T1,T2)
   Interval{T}(convert(T,x.l),convert(T,x.u))
 end
-convert{T<:Real}(::Type{Interval}, c::T) = Interval{T}(c,c)
-convert{T<:Real}(::Type{Interval{T}}, c::T) = Interval{T}(c,c)
-convert{T1<:Real, T2<:Real}(::Type{Interval{T1}}, c::T2) = Interval{T1}(c,c)
+convert(::Type{Interval}, c::Real) = Interval{typeof(c)}(c,c)
+convert(::Type{Interval{T}}, c::T) where {T<:Real} = Interval{T}(c,c)
+convert(::Type{Interval{T1}}, c::T2) where {T1<:Real, T2<:Real} = Interval{T1}(c,c)
 
-promote_rule{T1<:Real, T2<:Real}(::Type{Interval{T1}}, ::Type{T2}) = Interval{T1}
-promote_rule{T1<:Real, T2<:Real}(::Type{Interval{T1}}, ::Type{Interval{T2}}) = Interval{promote_type(T1,T2)}
+promote_rule(::Type{Interval{T1}}, ::Type{T2}) where {T1<:Real, T2<:Real} = Interval{T1}
+promote_rule(::Type{Interval{T1}}, ::Type{Interval{T2}}) where {T1<:Real, T2<:Real} = Interval{promote_type(T1,T2)}
 
 ## Domain operations
 ## =================
@@ -38,9 +39,13 @@ issubset(x::Interval, y::Interval) = x.l >= y.l && x.u <= y.u
 isintersect(x::Interval, y::Interval) = y.l <= x.u && x.l <= y.u
 domaineq(x::Interval, y::Interval) = x.u == y.u && x.l == y.l
 
-@doc "Construct interval which is intersection of two intervals" ->
-intersect{T}(x::Interval{T}, y::Interval{T}) = Interval(max(x.l, y.l), min(x.u, y.u))
-intersect{T,S}(a::Interval{T}, b::Interval{S}) = intersect(promote(a,b)...)
+"""
+    intersect(x::Interval{T}, y::Interval{T}) where T
+
+Construct interval which is intersection of two intervals
+"""
+intersect(x::Interval{T}, y::Interval{T}) where T = Interval(max(x.l, y.l), min(x.u, y.u))
+intersect(a::Interval{T}, b::Interval{S}) where {T,S} = intersect(promote(a,b)...)
 ⊓ = intersect
 
 ## Union/Join
@@ -59,7 +64,7 @@ end
 isequal(x::Interval,y::Interval) = domaineq(x,y)
 isrelational(::Type{Interval}) = false
 
-isabstract{T<:Real}(c::Type{T}, a::Type{Interval{T}}) = true
+isabstract(c::Type{T}, a::Type{Interval{T}}) where {T<:Real} = true
 
 ## Interval Arithmetic and Inequalities
 ## ====================================
@@ -102,7 +107,7 @@ end
 +(x::Interval) = x
 -(x::Interval, y::Real) = Interval(x.l - y, x.u - y)
 -(y::Real, x::Interval) = Interval(y - x.l, y - x.u)
--{T}(x::Interval{T}) = zero{T} - x
+-(x::Interval{T}) where {T} = zero{T} - x
 *(x::Interval, y::Real) = Interval(x.l * y, x.u * y)
 *(y::Real, x::Interval) = x * y
 
@@ -161,15 +166,15 @@ end
 ## Functions on Interval type
 ## ==========================
 
-unit{T}(::Type{Interval{T}}) = Interval{T}(zero(T), one(T))
-unit{T}(::Interval{T}) = Interval{T}(zero(T), one(T))
+unit(::Type{Interval{T}}) where T = Interval{T}(zero(T), one(T))
+unit(::Interval{T}) where T = Interval{T}(zero(T), one(T))
 
 ## It's all Ones and Zeros
 zero(::Type{Interval}) = Interval(0.0,0.0)
-one{T}(::Type{Interval{T}}) = Interval(one(T))
-one{T}(::Interval{T}) = Interval(one(T))
-zero{T}(::Type{Interval{T}}) = Interval(zero(T))
-zero{T}(::Interval{T}) = Interval(zero(T))
+one(::Type{Interval{T}}) where T = Interval(one(T))
+one(::Interval{T}) where T = Interval(one(T))
+zero(::Type{Interval{T}}) where T = Interval(zero(T))
+zero(::Interval{T}) where T = Interval(zero(T))
 
 ## Functions on interval abstraction itself
 ## =======================================
@@ -205,17 +210,17 @@ isapprox(x::Real, y::Interval) = isapprox(promote(x,y)...)
 
 ## Vector Interop
 ## ==============
-l{T<:Real}(v::Vector{T}) = v[1]
-u{T<:Real}(v::Vector{T}) = v[2]
+l(v::Vector{T}) where {T<:Real} = v[1]
+u(v::Vector{T}) where {T<:Real} = v[2]
 l(x::Interval) = x.l
 u(x::Interval) = x.u
-pair{T}(::Type{Interval{T}},low,up) = Interval(low,up)
+pair(::Type{Interval{T}},low,up) where T = Interval(low,up)
 pair(::Type{Vector{Float64}},low,up) = [low,up]
 Pair = Union{Vector{Float64},Interval}
 
 ## Splitting
 ## =========
-function split_box{P<:Pair}(i::P, split_point::Float64)
+function split_box(i::P, split_point::Float64) where {P<:Pair}
   @assert l(i) <= split_point <= u(i) "Split point must be within interval"
   # @assert l(i) != u(i) "Can't split a single point interval into disjoint sets"
 
@@ -246,13 +251,12 @@ end
 
 ## Sampling
 ## ========
-rand{T<:AbstractFloat}(x::Interval{T}) =  x.l + (x.u - x.l) * rand(T)
-rand{T<:Integer}(x::Interval{T}) = rand(UnitRange(x.l,x.u))
-rand{T<:Real}(x::Interval{T},n::Int) = T[rand(x) for i = 1:n]
+rand(x::Interval{T}) where {T<:AbstractFloat}  =  x.l + (x.u - x.l) * rand(T)
+rand(x::Interval{T}) where {T<:Integer} = rand(UnitRange(x.l,x.u))
+rand(x::Interval{T},n::Int) where {T<:Real} = T[rand(x) for i = 1:n]
 
 ## Print
 ## =====
 string(x::Interval) = "[$(x.l) $(x.u)]"
 print(io::IO, x::Interval) = print(io, string(x))
 show(io::IO, x::Interval) = print(io, string(x))
-showcompact(io::IO, x::Interval) = print(io, string(x))

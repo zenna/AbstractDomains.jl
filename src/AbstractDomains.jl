@@ -1,8 +1,11 @@
 module AbstractDomains
 
 import Base: convert, promote_rule
-import Base: string, print, show, showcompact, rand
-import Base: abs, zero, one, in, inv, ndims, issubset, union, intersect, isequal, ifelse
+import Base: string, print, show, rand
+import Base: abs, zero, one, in, inv, ndims, issubset, union, intersect, isequal
+
+# FIXME: ifelse is built-in. New methods are not allowed
+# import Base: ifelse
 
 import Base: !
 import Base: ==
@@ -28,9 +31,6 @@ import Base: /
 import Base: //
 import Base: getindex
 import Base: setindex!
-
-using Iterators
-using Compat
 
 export Interval,
        Domain,
