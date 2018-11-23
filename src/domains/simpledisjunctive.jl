@@ -3,7 +3,7 @@
 
 # This is a simple non-relational domain of disjunctive domains (paramaterised by T)
 
-immutable SimpleDisjunctive{T} <: Domain{T}
+struct SimpleDisjunctive{T} <: Domain{T}
   values::Set{T}
 end
 

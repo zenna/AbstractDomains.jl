@@ -1,6 +1,6 @@
 # Variables which can be multiple values
 NotEnv = Union{Float64, Bool, AbstractBool, Array, Int64, Interval}
-immutable EnvVar{K,V}
+struct EnvVar{K,V}
   worlds::Dict{K,NotEnv}
 
   EnvVar() = new(Dict{K,V}())

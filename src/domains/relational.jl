@@ -2,7 +2,7 @@
 ## =================================================================
 
 # This is a simple non-relational domain of disjunctive domains (paramaterised by T)
-immutable Relational{T} <: Domain{T}
+struct Relational{T} <: Domain{T}
   values::Set{T}
 end
 

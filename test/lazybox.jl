@@ -1,7 +1,7 @@
 using Base.Test
-using Compat
+
 X = Interval(0,1)
-@compat ll = LazyBox(Dict(1=>Interval(0,1)))
+ll = LazyBox(Dict(1=>Interval(0,1)))
 ll[3]
 @test domaineq(ll[3],Interval(0,1))
 @test ndims(ll) == 2
@@ -28,6 +28,6 @@ rand(l2)
 # Splitting
 l1split = mid_split(l1)
 @test length(l1split) == 4
-# @compat partial_split_box(l2,Dict(2=>3)) Need to fix splitting intervals
-@compat l1split = partial_split_box(l1,Dict(1=>0.5))
+# partial_split_box(l2,Dict(2=>3)) Need to fix splitting intervals
+l1split = partial_split_box(l1,Dict(1=>0.5))
 @test length(l1split) == 2
