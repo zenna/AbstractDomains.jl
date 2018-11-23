@@ -1,5 +1,3 @@
-using Base.Test
-
 X = Interval(0,1)
 ll = LazyBox(Dict(1=>Interval(0,1)))
 ll[3]

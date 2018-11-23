@@ -1,6 +1,5 @@
 using AbstractDomains
 import AbstractDomains: subsumes, isintersect, ⊔, sqr, makepos
-using Base.Test
 
 # Concrete Arithmetic Examples
 @test Interval(3,4) + Interval(9,10) === Interval(12,14)
@@ -65,5 +64,5 @@ using Base.Test
 @test (promote(Interval(3,5),Interval(10.0,20.0))) === (Interval(3.0,5.0),Interval(10.0,20.0))
 
 # rand
-@test all(i->-100<=i<=100,rand(Interval(-100,100),100))
-@test all(i->-100.<=i<=100.,rand(Interval(-100.,100.),100))
+@test all(i -> -100 <= i <= 100, rand(Interval(-100, 100), 100))
+@test all(i -> -100.0 <= i <= 100.0,rand(Interval(-100.,100.),100))

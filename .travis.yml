@@ -1,9 +1,13 @@
 language: julia
+os:
+  - osx
+  - linux
 notifications:
   email: false
 julia:
-  - 0.6
+  - 0.7
+  - 1.0
   - nightly
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("AbstractDomains")'
+# script:
+#   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#   - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("AbstractDomains")'

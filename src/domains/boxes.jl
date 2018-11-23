@@ -56,7 +56,7 @@ end
 # Find cartesian product of a bunch of subboxes (vector of intervals)
 function prodsubboxes(splits::Vector{Vector{Interval{T}}}) where T
   boxes = Tuple{Vararg{Interval}}[]
-  for subbox in product(splits...)
+  for subbox in Iterators.product(splits...)
     push!(boxes, subbox) # product returns tuple
   end
   return boxes
